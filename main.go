@@ -171,35 +171,15 @@ func main() {
 		return keys[i] < keys[j]
 	})
 
-	if argv.wait {
-		if len(keys) > 0 {
-			k := keys[0]
-			e := event[k]
-			output := true
-			seconds := e.Diff
-			if argv.waitMax > 0 && seconds > argv.waitMax {
-				output = false
-				seconds = argv.waitMax
-			}
-			waitfor(argv, seconds)
-			if output {
-				format := formatMessage
-				if argv.format != "" {
-					format = argv.format
-				}
-				formatEvent(format, e)
-			}
-		} else {
-			waitfor(argv, argv.waitMin)
-		}
-	} else {
-		format := formatStdout
-		if argv.format != "" {
-			format = argv.format
-		}
-		for _, k := range keys {
-			formatEvent(format, event[k])
-		}
+	ev := waitEvent
+	if !argv.wait {
+		ev = writeEvent
+	}
+
+	err = ev(argv, keys, event)
+
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
 
@@ -211,14 +191,48 @@ func waitfor(argv *argvT, seconds int64) {
 	time.Sleep(time.Duration(seconds) * time.Second)
 }
 
-func formatEvent(format string, e eventT) {
+func waitEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
+	if len(keys) == 0 {
+		waitfor(argv, argv.waitMin)
+		return nil
+	}
+	e := event[keys[0]]
+	output := true
+	seconds := e.Diff
+	if argv.waitMax > 0 && seconds > argv.waitMax {
+		output = false
+		seconds = argv.waitMax
+	}
+	waitfor(argv, seconds)
+	if !output {
+		return nil
+	}
+	format := formatMessage
+	if argv.format != "" {
+		format = argv.format
+	}
+	return formatEvent(format, e)
+}
+
+func writeEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
+	format := formatStdout
+	if argv.format != "" {
+		format = argv.format
+	}
+	for _, k := range keys {
+		err := formatEvent(format, event[k])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func formatEvent(format string, e eventT) error {
 	tmpl, err := template.New("format").Parse(format)
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
-	err = tmpl.Execute(os.Stdout, e)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	return tmpl.Execute(os.Stdout, e)
 }
