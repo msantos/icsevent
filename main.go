@@ -36,7 +36,7 @@ type eventT struct {
 }
 
 const (
-	version      = "0.2.0"
+	version      = "0.3.0"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -141,7 +141,7 @@ func main() {
 			fmt.Printf("%+v\n", e)
 		}
 
-		if e.Start.Unix() >= argv.start.Unix() {
+		if e.Start.UnixNano() >= argv.start.UnixNano() {
 			event[start] = eventT{
 				Event:    e,
 				Epoch:    e.Start.Unix(),
