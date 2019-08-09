@@ -156,7 +156,7 @@ func main() {
 			Event:    e,
 			Epoch:    e.End.Unix(),
 			Diff:     e.End.Unix() - argv.start.Unix(),
-			UnixDate: e.End.Format(time.UnixDate),
+			UnixDate: e.End.Local().Format(time.UnixDate),
 			Status:   "end",
 		}
 		m[end] = true

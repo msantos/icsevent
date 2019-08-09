@@ -201,6 +201,26 @@ EOF
   [ "${output}" = "$expect" ]
 }
 
+@test "icsevent: wait: exact end time" {
+  run ./icsevent --wait --start=1565656200 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+
+  expect='Mon Aug 12 20:30:00 EDT 2019: end: event 2
+Location: location of event
+Description: Begin description.'
+
+cat << EOF
+expect
+======
+$expect
+
+output
+======
+$output
+EOF
+
+  [ "${output}" = "$expect" ]
+}
+
 @test "icsevent: wait: poll interval: minimum wait" {
   run icsevent --dryrun --wait=false --wait-min=900 --start=1464646401 --duration="15m" file:///$PWD/test/basic.ics
 
