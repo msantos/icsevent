@@ -16,23 +16,24 @@ import (
 
 // argvT : command line arguments
 type argvT struct {
-	url     string
-	format  string
-	dryrun  bool
-	wait    bool
-	waitMax int64
-	waitMin int64
-	verbose int
-	start   time.Time
-	end     time.Time
+	url        string
+	format     string
+	dateFormat string
+	dryrun     bool
+	wait       bool
+	waitMax    int64
+	waitMin    int64
+	verbose    int
+	start      time.Time
+	end        time.Time
 }
 
 type eventT struct {
 	gocal.Event
-	Epoch    int64
-	Diff     int64
-	UnixDate string
-	Status   string
+	Epoch  int64
+	Diff   int64
+	Date   string
+	Status string
 }
 
 const (
@@ -45,7 +46,7 @@ const (
 {{- else }} -
 {{- end }}
 `
-	formatMessage = `{{.UnixDate}}: {{.Status}}: {{.Summary}}
+	formatMessage = `{{.Date}}: {{.Status}}: {{.Summary}}
 {{- if .Location }}
 Location: {{.Location}}
 {{- end }}
@@ -72,6 +73,9 @@ func args() *argvT {
 		"Duration to check for events")
 	format := flag.String("format", "",
 		"Template for formatting output")
+	dateFormat := flag.String("date-format",
+		"Mon Jan _2 15:04:05 MST 2006",
+		"Format for date string")
 	wait := flag.Bool("wait", false,
 		"Wait for first event")
 	waitMax := flag.Int64("wait-max", 0,
@@ -94,15 +98,16 @@ func args() *argvT {
 	}
 
 	return &argvT{
-		url:     flag.Arg(0),
-		format:  *format,
-		dryrun:  *dryrun,
-		wait:    *wait,
-		waitMax: *waitMax,
-		waitMin: *waitMin,
-		start:   startTime,
-		end:     startTime.Add(*duration),
-		verbose: *verbose,
+		url:        flag.Arg(0),
+		format:     *format,
+		dateFormat: *dateFormat,
+		dryrun:     *dryrun,
+		wait:       *wait,
+		waitMax:    *waitMax,
+		waitMin:    *waitMin,
+		start:      startTime,
+		end:        startTime.Add(*duration),
+		verbose:    *verbose,
 	}
 }
 
@@ -143,21 +148,21 @@ func main() {
 
 		if e.Start.UnixNano() >= argv.start.UnixNano() {
 			event[start] = eventT{
-				Event:    e,
-				Epoch:    e.Start.Unix(),
-				Diff:     e.Start.Unix() - argv.start.Unix(),
-				UnixDate: e.Start.Local().Format(time.UnixDate),
-				Status:   "start",
+				Event:  e,
+				Epoch:  e.Start.Unix(),
+				Diff:   e.Start.Unix() - argv.start.Unix(),
+				Date:   e.Start.Local().Format(argv.dateFormat),
+				Status: "start",
 			}
 			m[start] = true
 		}
 
 		event[end] = eventT{
-			Event:    e,
-			Epoch:    e.End.Unix(),
-			Diff:     e.End.Unix() - argv.start.Unix(),
-			UnixDate: e.End.Local().Format(time.UnixDate),
-			Status:   "end",
+			Event:  e,
+			Epoch:  e.End.Unix(),
+			Diff:   e.End.Unix() - argv.start.Unix(),
+			Date:   e.End.Local().Format(argv.dateFormat),
+			Status: "end",
 		}
 		m[end] = true
 	}
