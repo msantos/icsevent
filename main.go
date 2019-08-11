@@ -16,16 +16,16 @@ import (
 
 // argvT : command line arguments
 type argvT struct {
-	url        string
-	format     string
-	dateFormat string
-	dryrun     bool
-	wait       bool
-	waitMax    int64
-	waitMin    int64
-	verbose    int
-	start      time.Time
-	end        time.Time
+	url          string
+	outputFormat string
+	dateFormat   string
+	dryrun       bool
+	wait         bool
+	waitMax      int64
+	waitMin      int64
+	verbose      int
+	start        time.Time
+	end          time.Time
 }
 
 type eventT struct {
@@ -71,7 +71,7 @@ func args() *argvT {
 		"Do not sleep")
 	duration := flag.Duration("duration", 15*time.Minute,
 		"Duration to check for events")
-	format := flag.String("format", "",
+	outputFormat := flag.String("output-format", "",
 		"Template for formatting output")
 	dateFormat := flag.String("date-format",
 		"Mon Jan _2 15:04:05 MST 2006",
@@ -98,16 +98,16 @@ func args() *argvT {
 	}
 
 	return &argvT{
-		url:        flag.Arg(0),
-		format:     *format,
-		dateFormat: *dateFormat,
-		dryrun:     *dryrun,
-		wait:       *wait,
-		waitMax:    *waitMax,
-		waitMin:    *waitMin,
-		start:      startTime,
-		end:        startTime.Add(*duration),
-		verbose:    *verbose,
+		url:          flag.Arg(0),
+		outputFormat: *outputFormat,
+		dateFormat:   *dateFormat,
+		dryrun:       *dryrun,
+		wait:         *wait,
+		waitMax:      *waitMax,
+		waitMin:      *waitMin,
+		start:        startTime,
+		end:          startTime.Add(*duration),
+		verbose:      *verbose,
 	}
 }
 
@@ -213,16 +213,16 @@ func waitEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
 		return nil
 	}
 	format := formatMessage
-	if argv.format != "" {
-		format = argv.format
+	if argv.outputFormat != "" {
+		format = argv.outputFormat
 	}
 	return formatEvent(format, e)
 }
 
 func writeEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
 	format := formatStdout
-	if argv.format != "" {
-		format = argv.format
+	if argv.outputFormat != "" {
+		format = argv.outputFormat
 	}
 	for _, k := range keys {
 		err := formatEvent(format, event[k])
