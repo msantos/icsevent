@@ -259,8 +259,11 @@ EOF
   [ "${status}" -eq 0 ]
 }
 
-@test "icsevent: format" {
-  run icsevent --format="{{ printf \"%s: %s\n\" .Status .Summary }}" --start=1564646399 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+@test "icsevent: output format" {
+  run icsevent --output-format="{{ printf \"%s: %s\n\" .Status .Summary }}" \
+               --start=1564646399 \
+               --duration="$((30*24))h" \
+               file:///$PWD/test/basic.ics
 
   expect='start: event 1
 start: event with timezone
