@@ -167,14 +167,7 @@ func main() {
 		m[end] = true
 	}
 
-	keys := make([]int64, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-
-	sort.Slice(keys, func(i, j int) bool {
-		return keys[i] < keys[j]
-	})
+	keys := toSortedArray(m)
 
 	ev := waitEvent
 	if !argv.wait {
@@ -186,6 +179,17 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func toSortedArray(m map[int64]bool) []int64 {
+	keys := make([]int64, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+	return keys
 }
 
 func waitfor(argv *argvT, seconds int64) {
