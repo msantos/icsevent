@@ -26,8 +26,8 @@ DTSTART:20190812T233000Z
 DTEND:20190813T003000Z
 DTSTAMP:20190802T020222Z
 UID:1@example.com
-DESCRIPTION:Begin description.
-
+DESCRIPTION:Begin description.\n\nBody of the description, wrapping at 74 c
+ haracters. End description.
 End description.
 LOCATION:location of event
 SEQUENCE:1
