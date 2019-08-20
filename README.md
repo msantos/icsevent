@@ -35,11 +35,11 @@ like [daemontools](https://cr.yp.to/daemontools.html).
 
   For example, if the next event happens in 1 month, icsevent will:
 
-			* exit after 15 minutes
-			* be restarted by the supervisor process
-			* poll for events
+    * exit after 15 minutes
+    * be restarted by the supervisor process
+    * poll for events
 
-* `--wait-min=1h`
+* `--wait-min=30m`
 
   The `--wait-min` option controls the polling rate when no events
   are found.
@@ -47,7 +47,8 @@ like [daemontools](https://cr.yp.to/daemontools.html).
   If no events are found, icsevent will exit immediately by default and
   be restarted by the supervisor, polling the calendar service every second.
 
-  The `--wait-min` option would limit the rate of polling to 1/30 minutes.
+  Setting the value of the `--wait-min` option to "30m" limits the rate
+  of polling to 1 connection every 30 minutes.
 
 # EXAMPLES
 
@@ -60,22 +61,19 @@ icsevent --duration="$((3*30*24))h" https://www.calendarlabs.com/ical-calendar/i
 ## Modify formatting
 
 ```
-FORMAT='{{.Date}}: {{.Status}}: {{.Summary}}
+FORMAT='{{if eq .Status "start"}}
+{{- .Date}}
+
+{{.Summary}}
 {{- if .Location }}
 Location: {{.Location}}
 {{- end }}
 {{- if .Description}}
 Description: {{.Description}}
 {{- end }}
-{{- if .Attendees}}
-Attendees:
-{{ range .Attendees }}* {{ if .Cn }}{{.Cn}}{{else}}{{ .Value}}{{end}}
-{{ end }}
-{{- end }}
-{{- if .Organizer}}
-Organizer: {{.Organizer.Cn}}
-{{- end }}
-'
+{{else}}
+---
+{{end}}'
 
 icsevent --duration="$((3*30*24))h" \
   --output-format="$FORMAT" \
