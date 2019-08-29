@@ -4,7 +4,8 @@
   run icsevent --start=1564646399 --duration="$((30*24))h" file:///$PWD/test/basic.ics
 
   expect='1564646400 1 start event+1 End+event+time+overlaps+with+event+with+timezone. -
-1564650000 3601 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
+1564650000 3601 end event+1 End+event+time+overlaps+with+event+with+timezone. -
+1564650030 3631 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1564657200 10801 end event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1565652600 1006201 start event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
 1565656200 1009801 end event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
@@ -30,7 +31,8 @@ EOF
   run icsevent --start=1564646400 --duration="$((30*24))h" file:///$PWD/test/basic.ics
 
   expect='1564646400 0 start event+1 End+event+time+overlaps+with+event+with+timezone. -
-1564650000 3600 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
+1564650000 3600 end event+1 End+event+time+overlaps+with+event+with+timezone. -
+1564650030 3630 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1564657200 10800 end event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1565652600 1006200 start event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
 1565656200 1009800 end event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
@@ -55,7 +57,8 @@ EOF
 @test "icsevent: all events: second after start" {
   run icsevent --start=1564646401 --duration="$((30*24))h" file:///$PWD/test/basic.ics
 
-  expect='1564650000 3599 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
+  expect='1564650000 3599 end event+1 End+event+time+overlaps+with+event+with+timezone. -
+1564650030 3629 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1564657200 10799 end event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1565652600 1006199 start event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
 1565656200 1009799 end event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
@@ -266,6 +269,7 @@ EOF
                file:///$PWD/test/basic.ics
 
   expect='start: event 1
+end: event 1
 start: event with timezone
 end: event with timezone
 start: event 2

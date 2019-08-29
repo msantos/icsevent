@@ -37,7 +37,7 @@ type eventT struct {
 }
 
 const (
-	version      = "0.3.0"
+	version      = "0.3.1"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -146,11 +146,16 @@ func main() {
 			fmt.Printf("%+v\n", e)
 		}
 
+		// end of event overlaps with start of next event
+		if _, ok := event[start]; ok && event[start].Status == "end" {
+			start += 30
+		}
+
 		if e.Start.UnixNano() >= argv.start.UnixNano() {
 			event[start] = eventT{
 				Event:  e,
-				Epoch:  e.Start.Unix(),
-				Diff:   e.Start.Unix() - argv.start.Unix(),
+				Epoch:  start,
+				Diff:   start - argv.start.Unix(),
 				Date:   e.Start.Local().Format(argv.dateFormat),
 				Status: "start",
 			}
