@@ -37,7 +37,7 @@ type eventT struct {
 }
 
 const (
-	version      = "0.3.1"
+	version      = "0.4.0"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -136,7 +136,7 @@ func main() {
 	}
 
 	m := make(map[int64]bool)
-	event := make(map[int64]eventT)
+	event := make(map[int64][]eventT)
 
 	for _, e := range c.Events {
 		start := e.Start.Unix()
@@ -146,29 +146,24 @@ func main() {
 			fmt.Printf("%+v\n", e)
 		}
 
-		// end of event overlaps with start of next event
-		if _, ok := event[start]; ok && event[start].Status == "end" {
-			start += 30
-		}
-
 		if e.Start.UnixNano() >= argv.start.UnixNano() {
-			event[start] = eventT{
+			event[start] = append(event[start], eventT{
 				Event:  e,
 				Epoch:  start,
 				Diff:   start - argv.start.Unix(),
 				Date:   e.Start.Local().Format(argv.dateFormat),
 				Status: "start",
-			}
+			})
 			m[start] = true
 		}
 
-		event[end] = eventT{
+		event[end] = append(event[end], eventT{
 			Event:  e,
 			Epoch:  e.End.Unix(),
 			Diff:   e.End.Unix() - argv.start.Unix(),
 			Date:   e.End.Local().Format(argv.dateFormat),
 			Status: "end",
-		}
+		})
 		m[end] = true
 	}
 
@@ -205,12 +200,12 @@ func waitfor(argv *argvT, seconds int64) {
 	time.Sleep(time.Duration(seconds) * time.Second)
 }
 
-func waitEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
+func waitEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 	if len(keys) == 0 {
 		waitfor(argv, argv.waitMin)
 		return nil
 	}
-	e := event[keys[0]]
+	e := event[keys[0]][0]
 	output := true
 	seconds := e.Diff
 	if argv.waitMax > 0 && seconds > argv.waitMax {
@@ -225,10 +220,10 @@ func waitEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
 	if argv.outputFormat != "" {
 		format = argv.outputFormat
 	}
-	return formatEvent(format, e)
+	return formatEvent(format, event[keys[0]])
 }
 
-func writeEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
+func writeEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 	format := formatStdout
 	if argv.outputFormat != "" {
 		format = argv.outputFormat
@@ -242,11 +237,16 @@ func writeEvent(argv *argvT, keys []int64, event map[int64]eventT) error {
 	return nil
 }
 
-func formatEvent(format string, e eventT) error {
+func formatEvent(format string, event []eventT) error {
 	tmpl, err := template.New("format").Parse(format)
 	if err != nil {
 		return err
 	}
 
-	return tmpl.Execute(os.Stdout, e)
+	for _, e := range event {
+		if err := tmpl.Execute(os.Stdout, e); err != nil {
+			return err
+		}
+	}
+	return nil
 }
