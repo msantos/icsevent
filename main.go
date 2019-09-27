@@ -69,7 +69,7 @@ func args() *argvT {
 		"Start time in epoch seconds (default: now)")
 	dryrun := flag.Bool("dryrun", false,
 		"Do not sleep")
-	duration := flag.Duration("duration", 15*time.Minute,
+	duration := flag.Duration("duration", 24*time.Hour,
 		"Duration to check for events")
 	outputFormat := flag.String("output-format", "",
 		"Template for formatting output")
@@ -114,10 +114,7 @@ func args() *argvT {
 func main() {
 	argv := args()
 
-	t := &http.Transport{}
-	t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
-	h := &http.Client{Transport: t}
-	resp, err := h.Get(argv.url)
+	resp, err := get(argv.url)
 
 	if err != nil {
 		log.Fatalln(err)
@@ -179,6 +176,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func get(url string) (*http.Response, error) {
+	t := &http.Transport{}
+	t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
+	c := &http.Client{Transport: t}
+	return c.Get(url)
 }
 
 func toSortedArray(m map[int64]bool) []int64 {
