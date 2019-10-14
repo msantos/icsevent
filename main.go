@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
@@ -247,8 +248,12 @@ func formatEvent(format string, event []eventT) error {
 		return err
 	}
 
+	stdout := bufio.NewWriter(os.Stdout)
 	for _, e := range event {
-		if err := tmpl.Execute(os.Stdout, e); err != nil {
+		if err := tmpl.Execute(stdout, e); err != nil {
+			return err
+		}
+		if err := stdout.Flush(); err != nil {
 			return err
 		}
 	}
