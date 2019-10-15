@@ -38,7 +38,7 @@ type eventT struct {
 }
 
 const (
-	version      = "0.4.0"
+	version      = "0.4.1"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -127,9 +127,7 @@ func main() {
 	c.Start = &argv.start
 	c.End = &argv.end
 
-	err = c.Parse()
-
-	if err != nil {
+	if err := c.Parse(); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -172,9 +170,7 @@ func main() {
 		ev = writeEvent
 	}
 
-	err = ev(argv, keys, event)
-
-	if err != nil {
+	if err := ev(argv, keys, event); err != nil {
 		log.Fatalln(err)
 	}
 }
@@ -234,8 +230,7 @@ func writeEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 		format = argv.outputFormat
 	}
 	for _, k := range keys {
-		err := formatEvent(format, event[k])
-		if err != nil {
+		if err := formatEvent(format, event[k]); err != nil {
 			return err
 		}
 	}
