@@ -7,8 +7,8 @@
 1564650000 3601 end event+1 End+event+time+overlaps+with+event+with+timezone. -
 1564650000 3601 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1564657200 10801 end event+with+timezone Start+time+overlaps+with+event+1. Toronto
-1565652600 1006201 start event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
-1565656200 1009801 end event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
+1565652600 1006201 start event+2 Begin+description.%0A%0ABody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
+1565656200 1009801 end event+2 Begin+description.%0A%0ABody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
 1565769600 1123201 start event+3 - -
 1565776800 1130401 end event+3 - -
 1565823600 1177201 start recurring+event - -
@@ -34,8 +34,8 @@ EOF
 1564650000 3600 end event+1 End+event+time+overlaps+with+event+with+timezone. -
 1564650000 3600 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1564657200 10800 end event+with+timezone Start+time+overlaps+with+event+1. Toronto
-1565652600 1006200 start event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
-1565656200 1009800 end event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
+1565652600 1006200 start event+2 Begin+description.%0A%0ABody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
+1565656200 1009800 end event+2 Begin+description.%0A%0ABody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
 1565769600 1123200 start event+3 - -
 1565776800 1130400 end event+3 - -
 1565823600 1177200 start recurring+event - -
@@ -60,8 +60,8 @@ EOF
   expect='1564650000 3599 end event+1 End+event+time+overlaps+with+event+with+timezone. -
 1564650000 3599 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
 1564657200 10799 end event+with+timezone Start+time+overlaps+with+event+1. Toronto
-1565652600 1006199 start event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
-1565656200 1009799 end event+2 Begin+description.%5Cn%5CnBody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
+1565652600 1006199 start event+2 Begin+description.%0A%0ABody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
+1565656200 1009799 end event+2 Begin+description.%0A%0ABody+of+the+description%2C+wrapping+at+74+characters.+End+description. location+of+event
 1565769600 1123199 start event+3 - -
 1565776800 1130399 end event+3 - -
 1565823600 1177199 start recurring+event - -
@@ -209,7 +209,9 @@ EOF
 
   expect='Mon Aug 12 20:30:00 EDT 2019: end: event 2
 Location: location of event
-Description: Begin description.\n\nBody of the description, wrapping at 74 characters. End description.'
+Description: Begin description.
+
+Body of the description, wrapping at 74 characters. End description.'
 
 cat << EOF
 expect

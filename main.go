@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"sort"
+	"strings"
 	"text/template"
 	"time"
 
@@ -38,7 +39,7 @@ type eventT struct {
 }
 
 const (
-	version      = "0.4.1"
+	version      = "0.4.2"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -137,6 +138,12 @@ func main() {
 	for _, e := range c.Events {
 		start := e.Start.Unix()
 		end := e.End.Unix()
+
+		if e.Description != "" {
+			// https://github.com/apognu/gocal/pull/6
+			e.Description = strings.Replace(e.Description, `\n`, "\n", -1)
+			e.Description = strings.Replace(e.Description, `\N`, "\n", -1)
+		}
 
 		if argv.verbose > 1 {
 			fmt.Printf("%+v\n", e)
