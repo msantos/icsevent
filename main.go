@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"os"
 	"path"
+	"regexp"
 	"sort"
 	"strings"
 	"text/template"
@@ -38,8 +40,13 @@ type eventT struct {
 	Status string
 }
 
+type reT struct {
+	match   string
+	replace string
+}
+
 const (
-	version      = "0.4.2"
+	version      = "0.5.0"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -245,7 +252,10 @@ func writeEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 }
 
 func formatEvent(format string, event []eventT) error {
-	tmpl, err := template.New("format").Parse(format)
+	funcMap := template.FuncMap{
+		"text": text,
+	}
+	tmpl, err := template.New("format").Funcs(funcMap).Parse(format)
 	if err != nil {
 		return err
 	}
@@ -260,4 +270,44 @@ func formatEvent(format string, event []eventT) error {
 		}
 	}
 	return nil
+}
+
+func text(s string) string {
+	m := []reT{
+		{
+			match:   `(?i)(<b>|</b>)`,
+			replace: "*",
+		},
+		{
+			match:   `(?i)<br>`,
+			replace: "\n",
+		},
+		{
+			match:   `(?i)(<i>|</i>)`,
+			replace: "_",
+		},
+		{
+			match:   `(?i)(<pre>|</pre>)`,
+			replace: "\n```\n",
+		},
+		{
+			match:   `(?i)(<dl>|<ol>|<ul>|</dl>|</ol></ul>)`,
+			replace: "\n\n",
+		},
+		{
+			match:   `(?i)<li>`,
+			replace: "* ",
+		},
+		{
+			match:   `(?i)</li>`,
+			replace: "\n",
+		},
+	}
+
+	for _, r := range m {
+		re := regexp.MustCompile(r.match)
+		s = re.ReplaceAllLiteralString(s, r.replace)
+	}
+
+	return html.UnescapeString(s)
 }
