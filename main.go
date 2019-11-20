@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"html"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -46,7 +47,7 @@ type reT struct {
 }
 
 const (
-	version      = "0.5.0"
+	version      = "0.6.0"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -93,12 +94,19 @@ func args() *argvT {
 		"Minimum amount of time to poll for new events")
 	verbose := flag.Int("verbose", 0,
 		"Enable debug messages")
+	help := flag.Bool("help", false,
+		"Usage")
 
 	flag.Parse()
 
-	if flag.NArg() == 0 {
+	if *help {
 		flag.Usage()
 		os.Exit(1)
+	}
+
+	var url string
+	if flag.NArg() > 0 {
+		url = flag.Arg(0)
 	}
 
 	startTime := time.Now()
@@ -107,7 +115,7 @@ func args() *argvT {
 	}
 
 	return &argvT{
-		url:          flag.Arg(0),
+		url:          url,
 		outputFormat: *outputFormat,
 		dateFormat:   *dateFormat,
 		dryrun:       *dryrun,
@@ -123,15 +131,19 @@ func args() *argvT {
 func main() {
 	argv := args()
 
-	resp, err := get(argv.url)
-
-	if err != nil {
-		log.Fatalln(err)
+	var r io.Reader
+	if argv.url != "" {
+		resp, err := http.Get(argv.url)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		defer resp.Body.Close()
+		r = resp.Body
+	} else {
+		r = os.Stdin
 	}
 
-	defer resp.Body.Close()
-
-	c := gocal.NewParser(resp.Body)
+	c := gocal.NewParser(r)
 	c.Start = &argv.start
 	c.End = &argv.end
 
@@ -187,13 +199,6 @@ func main() {
 	if err := ev(argv, keys, event); err != nil {
 		log.Fatalln(err)
 	}
-}
-
-func get(url string) (*http.Response, error) {
-	t := &http.Transport{}
-	t.RegisterProtocol("file", http.NewFileTransport(http.Dir("/")))
-	c := &http.Client{Transport: t}
-	return c.Get(url)
 }
 
 func toSortedArray(m map[int64]bool) []int64 {

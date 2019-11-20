@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 @test "icsevent: all events" {
-  run icsevent --start=1564646399 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --start=1564646399 --duration="$((30*24))h" < test/basic.ics
 
   expect='1564646400 1 start event+1 End+event+time+overlaps+with+event+with+timezone. -
 1564650000 3601 end event+1 End+event+time+overlaps+with+event+with+timezone. -
@@ -28,7 +28,7 @@ EOF
 }
  
 @test "icsevent: all events: exact start time" {
-  run icsevent --start=1564646400 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --start=1564646400 --duration="$((30*24))h" < test/basic.ics
 
   expect='1564646400 0 start event+1 End+event+time+overlaps+with+event+with+timezone. -
 1564650000 3600 end event+1 End+event+time+overlaps+with+event+with+timezone. -
@@ -55,7 +55,7 @@ EOF
 }
  
 @test "icsevent: all events: second after start" {
-  run icsevent --start=1564646401 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --start=1564646401 --duration="$((30*24))h" < test/basic.ics
 
   expect='1564650000 3599 end event+1 End+event+time+overlaps+with+event+with+timezone. -
 1564650000 3599 start event+with+timezone Start+time+overlaps+with+event+1. Toronto
@@ -81,7 +81,7 @@ EOF
 }
 
 @test "icsevent: recurring events" {
-  run icsevent --start=1565776801 --duration="$((12*30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --start=1565776801 --duration="$((12*30*24))h" < test/basic.ics
 
   expect='1565823600 46799 start recurring+event - -
 1565841600 64799 end recurring+event - -
@@ -106,7 +106,7 @@ EOF
 }
 
 @test "icsevent: wait: recurring event" {
-  run icsevent --dryrun --wait --start=1565776801 --duration="$((12*30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --dryrun --wait --start=1565776801 --duration="$((12*30*24))h" < test/basic.ics
 
   # date --date=@$((1565776801+46799))
   # Wed Aug 14 19:00:00 EDT 2019
@@ -127,7 +127,7 @@ EOF
 }
 
 @test "icsevent: wait: next event" {
-  run icsevent --dryrun --wait --start=1564646399 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --dryrun --wait --start=1564646399 --duration="$((30*24))h" < test/basic.ics
 
   expect='sleep: 1
 Thu Aug  1 04:00:00 EDT 2019: start: event 1
@@ -147,7 +147,7 @@ EOF
 }
 
 @test "icsevent: wait: wait for next event" {
-  run icsevent --wait --start=1564646399 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --wait --start=1564646399 --duration="$((30*24))h" < test/basic.ics
 
   expect='Thu Aug  1 04:00:00 EDT 2019: start: event 1
 Description: End event time overlaps with event with timezone.'
@@ -166,7 +166,7 @@ EOF
 }
 
 @test "icsevent: wait: exact start time" {
-  run icsevent --dryrun --wait --start=1564646400 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --dryrun --wait --start=1564646400 --duration="$((30*24))h" < test/basic.ics
 
   expect='sleep: 0
 Thu Aug  1 04:00:00 EDT 2019: start: event 1
@@ -186,7 +186,7 @@ EOF
 }
 
 @test "icsevent: wait: sleep for exact start time" {
-  run icsevent --wait --start=1564646400 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run icsevent --wait --start=1564646400 --duration="$((30*24))h" < test/basic.ics
 
   expect='Thu Aug  1 04:00:00 EDT 2019: start: event 1
 Description: End event time overlaps with event with timezone.'
@@ -205,7 +205,7 @@ EOF
 }
 
 @test "icsevent: wait: exact end time" {
-  run ./icsevent --wait --start=1565656200 --duration="$((30*24))h" file:///$PWD/test/basic.ics
+  run ./icsevent --wait --start=1565656200 --duration="$((30*24))h" < test/basic.ics
 
   expect='Mon Aug 12 20:30:00 EDT 2019: end: event 2
 Location: location of event
@@ -227,7 +227,7 @@ EOF
 }
 
 @test "icsevent: wait: poll interval: minimum wait" {
-  run icsevent --dryrun --wait=false --wait-min=900 --start=1464646401 --duration="15m" file:///$PWD/test/basic.ics
+  run icsevent --dryrun --wait=false --wait-min=900 --start=1464646401 --duration="15m" < test/basic.ics
 
   expect=''
 
@@ -246,7 +246,7 @@ EOF
 }
 
 @test "icsevent: wait: poll interval: maximum wait" {
-  run icsevent --dryrun --wait=true --wait-max=60 --start=1564650001 --duration="15m" file:///$PWD/test/basic.ics
+  run icsevent --dryrun --wait=true --wait-max=60 --start=1564650001 --duration="15m" < test/basic.ics
 
   expect='sleep: 60'
 
@@ -268,7 +268,7 @@ EOF
   run icsevent --output-format="{{ printf \"%s: %s\n\" .Status .Summary }}" \
                --start=1564646399 \
                --duration="$((30*24))h" \
-               file:///$PWD/test/basic.ics
+               < test/basic.ics
 
   expect='start: event 1
 end: event 1
