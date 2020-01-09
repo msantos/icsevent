@@ -61,7 +61,7 @@ icsevent --duration="$((3*30*24))h" https://www.calendarlabs.com/ical-calendar/i
 ## Modify formatting
 
 ```
-FORMAT='{{if eq .Status "start"}}
+FORMAT='{{if eq .State "start"}}
 {{- .Date}}
 
 {{.Summary}}
@@ -111,7 +111,7 @@ URL="https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics"
 NOTIFYDIR="$TMPDIR/xmpp-notify"
 
 # Use XEP-0393: Message Styling
-FORMAT='{{.Date}}: {{.Status}}: *{{.Summary}}*
+FORMAT='{{.Date}}: {{.State}}: *{{.Summary}}*
 {{- if .Location }}
 _Location_: {{.Location}}
 {{- end }}

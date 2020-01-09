@@ -38,7 +38,7 @@ type eventT struct {
 	Epoch  int64
 	Diff   int64
 	Date   string
-	Status string
+	State string
 }
 
 type reT struct {
@@ -48,7 +48,7 @@ type reT struct {
 
 const (
 	version      = "0.6.0"
-	formatStdout = `{{.Epoch}} {{.Diff}} {{.Status}} {{ .Summary | urlquery -}}
+	formatStdout = `{{.Epoch}} {{.Diff}} {{.State}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
 {{- end -}}
@@ -56,7 +56,7 @@ const (
 {{- else }} -
 {{- end }}
 `
-	formatMessage = `{{.Date}}: {{.Status}}: {{.Summary}}
+	formatMessage = `{{.Date}}: {{.State}}: {{.Summary}}
 {{- if .Location }}
 Location: {{.Location}}
 {{- end }}
@@ -174,7 +174,7 @@ func main() {
 				Epoch:  start,
 				Diff:   start - argv.start.Unix(),
 				Date:   e.Start.Local().Format(argv.dateFormat),
-				Status: "start",
+				State: "start",
 			})
 			m[start] = true
 		}
@@ -184,7 +184,7 @@ func main() {
 			Epoch:  e.End.Unix(),
 			Diff:   e.End.Unix() - argv.start.Unix(),
 			Date:   e.End.Local().Format(argv.dateFormat),
-			Status: "end",
+			State: "end",
 		})
 		m[end] = true
 	}

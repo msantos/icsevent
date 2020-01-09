@@ -265,7 +265,7 @@ EOF
 }
 
 @test "icsevent: output format" {
-  run icsevent --output-format="{{ printf \"%s: %s\n\" .Status .Summary }}" \
+  run icsevent --output-format="{{ printf \"%s: %s\n\" .State .Summary }}" \
                --start=1564646399 \
                --duration="$((30*24))h" \
                < test/basic.ics
