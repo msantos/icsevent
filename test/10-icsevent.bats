@@ -294,3 +294,58 @@ EOF
   [ "${output}" = "$expect" ]
   [ "${status}" -eq 0 ]
 }
+
+@test "icsevent: output format with html" {
+  run icsevent --output-format="{{.State}}: {{.Description | text}}" \
+               --start=1564646399 \
+               --duration="$((30*24))h" \
+               < test/html.ics
+
+  expect='start: 
+
+
+
+
+
+
+
+
+
+
+* *one*
+* _two_
+
+```
+three
+```
+end: 
+
+
+
+
+
+
+
+
+
+
+* *one*
+* _two_
+
+```
+three
+```'
+
+cat << EOF
+expect
+======
+$expect
+
+output
+======
+$output
+EOF
+
+  [ "${output}" = "$expect" ]
+  [ "${status}" -eq 0 ]
+}

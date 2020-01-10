@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/apognu/gocal"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // argvT : command line arguments
@@ -35,9 +36,9 @@ type argvT struct {
 
 type eventT struct {
 	gocal.Event
-	Epoch  int64
-	Diff   int64
-	Date   string
+	Epoch int64
+	Diff  int64
+	Date  string
 	State string
 }
 
@@ -170,20 +171,20 @@ func main() {
 
 		if e.Start.UnixNano() >= argv.start.UnixNano() {
 			event[start] = append(event[start], eventT{
-				Event:  e,
-				Epoch:  start,
-				Diff:   start - argv.start.Unix(),
-				Date:   e.Start.Local().Format(argv.dateFormat),
+				Event: e,
+				Epoch: start,
+				Diff:  start - argv.start.Unix(),
+				Date:  e.Start.Local().Format(argv.dateFormat),
 				State: "start",
 			})
 			m[start] = true
 		}
 
 		event[end] = append(event[end], eventT{
-			Event:  e,
-			Epoch:  e.End.Unix(),
-			Diff:   e.End.Unix() - argv.start.Unix(),
-			Date:   e.End.Local().Format(argv.dateFormat),
+			Event: e,
+			Epoch: e.End.Unix(),
+			Diff:  e.End.Unix() - argv.start.Unix(),
+			Date:  e.End.Local().Format(argv.dateFormat),
 			State: "end",
 		})
 		m[end] = true
@@ -314,5 +315,5 @@ func text(s string) string {
 		s = re.ReplaceAllLiteralString(s, r.replace)
 	}
 
-	return html.UnescapeString(s)
+	return html.UnescapeString(bluemonday.StrictPolicy().Sanitize(s))
 }
