@@ -259,7 +259,8 @@ func writeEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 
 func formatEvent(format string, event []eventT) error {
 	funcMap := template.FuncMap{
-		"text": text,
+		"match": match,
+		"text":  text,
 	}
 	tmpl, err := template.New("format").Funcs(funcMap).Parse(format)
 	if err != nil {
@@ -316,4 +317,12 @@ func text(s string) string {
 	}
 
 	return html.UnescapeString(bluemonday.StrictPolicy().Sanitize(s))
+}
+
+func match(p string, s string) bool {
+	matched, err := regexp.MatchString(p, s)
+	if err != nil {
+		panic(err)
+	}
+	return matched
 }

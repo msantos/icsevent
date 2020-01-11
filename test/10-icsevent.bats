@@ -349,3 +349,29 @@ EOF
   [ "${output}" = "$expect" ]
   [ "${status}" -eq 0 ]
 }
+
+@test "icsevent: match events" {
+  FORMAT='{{- if and (not (match "(?i)^Cancelled" .Summary)) (ne .Status "CANCELLED") -}}
+{{.Status}}:{{.Description}}
+{{ end }}'
+
+  run icsevent --duration="$((3*30*24))h" \
+    --start=1564646399 \
+    --output-format="${FORMAT}" < test/match.ics
+
+  expect='CONFIRMED:confirmed event
+CONFIRMED:confirmed event'
+
+cat << EOF
+expect
+======
+$expect
+
+output
+======
+$output
+EOF
+
+  [ "${output}" = "$expect" ]
+  [ "${status}" -eq 0 ]
+}
