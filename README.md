@@ -138,7 +138,7 @@ exec icsevent \
     "$URL"
 ~~~
 
-~~~ service/10-xmppipe/run
+``` service/10-xmppipe/run
 #!/bin/sh
 
 umask 0077
@@ -153,7 +153,7 @@ rm -f "$NOTIFYDIR/pipe"
 mkfifo "$NOTIFYDIR/pipe"
 exec <> "$NOTIFYDIR/pipe"
 exec xmppipe -o groupchat
-~~~
+```
 
 # OPTIONS
 
@@ -181,3 +181,24 @@ exec xmppipe -o groupchat
 
 --wait-min *int*
 : Minimum amount of time to poll for new events
+
+# TEMPLATE FUNCTIONS
+
+## text
+
+Converts HTML to [styled plain
+text](https://xmpp.org/extensions/xep-0393.html).
+
+```
+{{.Description | text}}
+```
+
+## match
+
+Boolean regular expression match:
+
+```
+{{- if not (match "(?i)^Cancelled" .Summary) -}}
+...
+{{ end }}
+```
