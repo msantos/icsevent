@@ -48,7 +48,7 @@ type reT struct {
 }
 
 const (
-	version      = "0.7.0"
+	version      = "0.8.0"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.State}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
