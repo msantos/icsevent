@@ -192,12 +192,12 @@ func main() {
 
 	keys := toSortedArray(m)
 
-	ev := waitEvent
+	ev := argv.waitEvent
 	if !argv.wait {
-		ev = writeEvent
+		ev = argv.writeEvent
 	}
 
-	if err := ev(argv, keys, event); err != nil {
+	if err := ev(keys, event); err != nil {
 		log.Fatalln(err)
 	}
 }
@@ -213,7 +213,7 @@ func toSortedArray(m map[int64]bool) []int64 {
 	return keys
 }
 
-func waitfor(argv *argvT, seconds int64) {
+func (argv *argvT) waitfor(seconds int64) {
 	if argv.dryrun {
 		fmt.Printf("sleep: %d\n", seconds)
 		return
@@ -221,9 +221,9 @@ func waitfor(argv *argvT, seconds int64) {
 	time.Sleep(time.Duration(seconds) * time.Second)
 }
 
-func waitEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
+func (argv *argvT) waitEvent(keys []int64, event map[int64][]eventT) error {
 	if len(keys) == 0 {
-		waitfor(argv, argv.waitMin)
+		argv.waitfor(argv.waitMin)
 		return nil
 	}
 	e := event[keys[0]][0]
@@ -233,7 +233,7 @@ func waitEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 		output = false
 		seconds = argv.waitMax
 	}
-	waitfor(argv, seconds)
+	argv.waitfor(seconds)
 	if !output {
 		return nil
 	}
@@ -244,7 +244,7 @@ func waitEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
 	return formatEvent(format, event[keys[0]])
 }
 
-func writeEvent(argv *argvT, keys []int64, event map[int64][]eventT) error {
+func (argv *argvT) writeEvent(keys []int64, event map[int64][]eventT) error {
 	format := formatStdout
 	if argv.outputFormat != "" {
 		format = argv.outputFormat
