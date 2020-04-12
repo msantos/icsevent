@@ -159,11 +159,8 @@ func main() {
 		start := e.Start.Unix()
 		end := e.End.Unix()
 
-		if e.Description != "" {
-			// https://github.com/apognu/gocal/pull/6
-			e.Description = strings.Replace(e.Description, `\n`, "\n", -1)
-			e.Description = strings.Replace(e.Description, `\N`, "\n", -1)
-		}
+		// https://github.com/apognu/gocal/pull/6
+		e.Description = newline(e.Description)
 
 		if argv.verbose > 1 {
 			fmt.Printf("%+v\n", e)
@@ -200,6 +197,10 @@ func main() {
 	if err := ev(keys, event); err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func newline(s string) string {
+	return strings.Replace(strings.Replace(s, `\N`, "\n", -1), `\n`, "\n", -1)
 }
 
 func toSortedArray(m map[int64]bool) []int64 {
