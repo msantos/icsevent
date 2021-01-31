@@ -7,13 +7,13 @@ icsevent [*options*] *URL*
 # DESCRIPTION
 
 icsevent is a simple, minimal command line utility for polling ICS files
-for calendar events. icsevent can be used as part of a shell pipeline
-to send notifications or kick off other jobs.
+for calendar events. icsevent runs as part of a shell pipeline to send
+notifications or kick off other jobs.
 
 The ICS format is parsed using [gocal](https://github.com/apognu/gocal).
 
-By default, the events will be converted to a percent-encoded, line
-oriented format that can be piped to other utilities.
+By default, events are converted to a percent-encoded, line oriented
+format that can be piped to other utilities.
 
 Using the `--wait` option will cause icsevent to sleep until the next
 event.
@@ -158,10 +158,10 @@ exec xmppipe -o groupchat
 # OPTIONS
 
 --dryrun
-: When running with the `--wait`, do not actually sleep
+: When running with `--wait`, do not actually sleep
 
 --duration *duration*
-: Interval after start time to check for events (default 15m0s)
+: Window beginning at start time to check for events (default 15m0s)
 
 --output-format *string*
 : Template for formatting output using the [Go template
