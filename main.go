@@ -41,7 +41,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// argvT : command line arguments
+// argvT : command line arguments.
 type argvT struct {
 	url          string
 	outputFormat string
@@ -221,7 +221,7 @@ func main() {
 }
 
 func newline(s string) string {
-	return strings.Replace(strings.Replace(s, `\N`, "\n", -1), `\n`, "\n", -1)
+	return strings.ReplaceAll(strings.ReplaceAll(s, `\N`, "\n"), `\n`, "\n")
 }
 
 func toSortedArray(m map[int64]bool) []int64 {
