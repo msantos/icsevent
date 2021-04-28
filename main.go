@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2019-2020 Michael Santos
+// Copyright (c) 2019-2021 Michael Santos
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -173,7 +173,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	m := make(map[int64]bool)
+	m := make(map[int64]struct{})
 	event := make(map[int64][]eventT)
 
 	for _, e := range c.Events {
@@ -195,7 +195,7 @@ func main() {
 				Date:  e.Start.Local().Format(argv.dateFormat),
 				State: "start",
 			})
-			m[start] = true
+			m[start] = struct{}{}
 		}
 
 		event[end] = append(event[end], eventT{
@@ -205,7 +205,7 @@ func main() {
 			Date:  e.End.Local().Format(argv.dateFormat),
 			State: "end",
 		})
-		m[end] = true
+		m[end] = struct{}{}
 	}
 
 	keys := toSortedArray(m)
@@ -224,7 +224,7 @@ func newline(s string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(s, `\N`, "\n"), `\n`, "\n")
 }
 
-func toSortedArray(m map[int64]bool) []int64 {
+func toSortedArray(m map[int64]struct{}) []int64 {
 	keys := make([]int64, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
