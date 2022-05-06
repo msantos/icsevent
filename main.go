@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2019-2021 Michael Santos
+// Copyright (c) 2019-2022 Michael Santos
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 package main
 
 import (
-	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
 	"html"
@@ -69,7 +69,7 @@ type reT struct {
 }
 
 const (
-	version      = "0.8.0"
+	version      = "0.8.1"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.State}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
@@ -289,12 +289,12 @@ func formatEvent(format string, event []eventT) error {
 		return err
 	}
 
-	stdout := bufio.NewWriter(os.Stdout)
 	for _, e := range event {
-		if err := tmpl.Execute(stdout, e); err != nil {
+		var buf bytes.Buffer
+		if err := tmpl.Execute(&buf, e); err != nil {
 			return err
 		}
-		if err := stdout.Flush(); err != nil {
+		if _, err := os.Stdout.Write(buf.Bytes()); err != nil {
 			return err
 		}
 	}
