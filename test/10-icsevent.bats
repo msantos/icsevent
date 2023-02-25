@@ -205,7 +205,7 @@ EOF
 }
 
 @test "icsevent: wait: exact end time" {
-  run ./icsevent --wait --start=1565656200 --duration="$((30*24))h" < test/basic.ics
+  run icsevent --wait --start=1565656200 --duration="$((30*24))h" < test/basic.ics
 
   expect='Mon Aug 12 20:30:00 EDT 2019: end: event 2
 Location: location of event
