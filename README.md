@@ -20,7 +20,9 @@ event.
 
 ## BUILDING
 
-    go build
+```
+go build
+```
 
 ## POLLING
 
@@ -35,9 +37,9 @@ like [daemontools](https://cr.yp.to/daemontools.html).
 
   For example, if the next event happens in 1 month, icsevent will:
 
-    * exit after 15 minutes
-    * be restarted by the supervisor process
-    * poll for events
+  * exit after 15 minutes
+  * be restarted by the supervisor process
+  * poll for events
 
 * `--wait-min=30m`
 
@@ -54,9 +56,9 @@ like [daemontools](https://cr.yp.to/daemontools.html).
 
 ## Dump events for the next 3 months
 
-~~~
+```
 icsevent --duration="$((3*30*24))h" https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics
-~~~
+```
 
 ## Modify formatting
 
@@ -82,18 +84,18 @@ icsevent --duration="$((3*30*24))h" \
 
 ## Wait for next event
 
-~~~
+```
 icsevent --wait --duration="$((3*30*24))h" \
   --output-format="$FORMAT" \
   https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics
-~~~
+```
 
 ## Wait with poll intervals
 
-~~~
+```
 icsevent --wait --wait-max=60m --wait-min=30m --duration="$((3*30*24))h" \
   https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics
-~~~
+```
 
 ## daemontools: run scripts: sending to an XMPP groupchat
 
@@ -101,9 +103,11 @@ Uses [xmppipe](https://github.com/msantos/xmppipe).
 
 To run:
 
-		svscan service
+```
+	svscan service
+```
 
-~~~ service/20-icsevent/run
+```service/20-icsevent/run
 #!/bin/sh
 
 URL="https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics"
@@ -136,9 +140,9 @@ exec icsevent \
     --wait-max=901 \
     --duration=24h \
     "$URL"
-~~~
+```
 
-``` service/10-xmppipe/run
+```service/10-xmppipe/run
 #!/bin/sh
 
 umask 0077
@@ -165,7 +169,7 @@ exec xmppipe -o groupchat
 
 --output-format *string*
 : Template for formatting output using the [Go template
-  syntax](https://golang.org/pkg/text/template/)
+syntax](https://golang.org/pkg/text/template/)
 
 --start *int*
 : Start time in epoch seconds (default: now)
