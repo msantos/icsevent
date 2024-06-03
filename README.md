@@ -104,10 +104,12 @@ Uses [xmppipe](https://github.com/msantos/xmppipe).
 To run:
 
 ```
-	svscan service
+svscan service
 ```
 
-```service/20-icsevent/run
+* service/20-icsevent/run
+
+```bash
 #!/bin/sh
 
 URL="https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics"
@@ -142,7 +144,9 @@ exec icsevent \
     "$URL"
 ```
 
-```service/10-xmppipe/run
+* service/10-xmppipe/run
+
+```bash
 #!/bin/sh
 
 umask 0077
@@ -190,8 +194,7 @@ syntax](https://golang.org/pkg/text/template/)
 
 ## text
 
-Converts HTML to [styled plain
-text](https://xmpp.org/extensions/xep-0393.html).
+Converts HTML to [styled plain text](https://xmpp.org/extensions/xep-0393.html).
 
 ```
 {{.Description | text}}
