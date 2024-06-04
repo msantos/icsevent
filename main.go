@@ -153,7 +153,8 @@ func args() *argvT {
 func main() {
 	argv := args()
 
-	var r io.Reader
+	var r io.Reader = os.Stdin
+
 	if argv.url != "" {
 		resp, err := http.Get(argv.url)
 		if err != nil {
@@ -161,8 +162,6 @@ func main() {
 		}
 		defer resp.Body.Close()
 		r = resp.Body
-	} else {
-		r = os.Stdin
 	}
 
 	c := gocal.NewParser(r)
