@@ -153,12 +153,18 @@ func args() *argvT {
 func main() {
 	argv := args()
 
+	if err := argv.run(); err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func (argv *argvT) run() error {
 	var r io.Reader = os.Stdin
 
 	if argv.url != "" {
 		resp, err := http.Get(argv.url)
 		if err != nil {
-			log.Fatalln(err)
+			return err
 		}
 		defer resp.Body.Close()
 		r = resp.Body
@@ -169,7 +175,7 @@ func main() {
 	c.End = &argv.end
 
 	if err := c.Parse(); err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
 	m := make(map[int64]struct{})
@@ -215,8 +221,10 @@ func main() {
 	}
 
 	if err := ev(keys, event); err != nil {
-		log.Fatalln(err)
+		return err
 	}
+
+	return nil
 }
 
 func newline(s string) string {
