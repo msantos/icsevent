@@ -21,7 +21,13 @@ event.
 ## BUILDING
 
 ```
-go build
+go install github.com/msantos/icsevent@latest
+```
+
+To build a reproducible executable from the git repository:
+
+```
+CGO_ENABLED=0 go build -trimpath -ldflags "-w"
 ```
 
 ## POLLING
