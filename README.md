@@ -21,7 +21,7 @@ event.
 ## BUILDING
 
 ```
-go install github.com/msantos/icsevent@latest
+go install go.iscode.ca/icsevent@latest
 ```
 
 To build a reproducible executable from the git repository:

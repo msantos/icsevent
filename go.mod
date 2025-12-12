@@ -1,4 +1,4 @@
-module github.com/msantos/icsevent
+module go.iscode.ca/icsevent
 
 go 1.21
 
