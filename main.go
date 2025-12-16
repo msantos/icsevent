@@ -1,6 +1,6 @@
 // MIT License
 //
-// # Copyright (c) 2019-2024 Michael Santos
+// # Copyright (c) 2019-2025 Michael Santos
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ type reT struct {
 }
 
 const (
-	version      = "0.8.3"
+	version      = "0.9.0"
 	formatStdout = `{{.Epoch}} {{.Diff}} {{.State}} {{ .Summary | urlquery -}}
 {{- if .Description }} {{ .Description | urlquery }}
 {{- else }} -
