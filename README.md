@@ -20,13 +20,13 @@ event.
 
 ## BUILDING
 
-```
+```bash
 go install go.iscode.ca/icsevent@latest
 ```
 
 To build a reproducible executable from the git repository:
 
-```
+```bash
 CGO_ENABLED=0 go build -trimpath -ldflags "-w"
 ```
 
@@ -62,13 +62,13 @@ like [daemontools](https://cr.yp.to/daemontools.html).
 
 ## Dump events for the next 3 months
 
-```
+```bash
 icsevent --duration="$((3*30*24))h" https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics
 ```
 
 ## Modify formatting
 
-```
+```bash
 FORMAT='{{if eq .State "start"}}
 {{- .Date}}
 
@@ -90,7 +90,7 @@ icsevent --duration="$((3*30*24))h" \
 
 ## Wait for next event
 
-```
+```bash
 icsevent --wait --duration="$((3*30*24))h" \
   --output-format="$FORMAT" \
   https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics
@@ -98,7 +98,7 @@ icsevent --wait --duration="$((3*30*24))h" \
 
 ## Wait with poll intervals
 
-```
+```bash
 icsevent --wait --wait-max=60m --wait-min=30m --duration="$((3*30*24))h" \
   https://www.calendarlabs.com/ical-calendar/ics/39/Canada_Holidays.ics
 ```
@@ -109,7 +109,7 @@ Uses [xmppipe](https://github.com/msantos/xmppipe).
 
 To run:
 
-```
+```bash
 svscan service
 ```
 
@@ -202,7 +202,7 @@ syntax](https://golang.org/pkg/text/template/)
 
 Converts HTML to [styled plain text](https://xmpp.org/extensions/xep-0393.html).
 
-```
+```gotmpl
 {{.Description | text}}
 ```
 
@@ -210,7 +210,7 @@ Converts HTML to [styled plain text](https://xmpp.org/extensions/xep-0393.html).
 
 Boolean regular expression match:
 
-```
+```gotmpl
 {{- if not (match "(?i)^Cancelled" .Summary) -}}
 ...
 {{ end }}
