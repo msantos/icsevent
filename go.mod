@@ -12,5 +12,5 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/channelmeter/iso8601duration v0.0.0-20150204201828-8da3af7a2a61 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
-	golang.org/x/net v0.52.0 // indirect
+	golang.org/x/net v0.57.0 // indirect
 )
