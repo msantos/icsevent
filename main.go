@@ -32,7 +32,7 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"sort"
+	"slices"
 	"strings"
 	"text/template"
 	"time"
@@ -240,9 +240,7 @@ func toSortedArray(m map[int64]struct{}) []int64 {
 	for k := range m {
 		keys = append(keys, k)
 	}
-	sort.Slice(keys, func(i, j int) bool {
-		return keys[i] < keys[j]
-	})
+	slices.Sort(keys)
 	return keys
 }
 
